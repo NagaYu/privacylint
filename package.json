@@ -28,7 +28,7 @@
   },
   "type": "module",
   "bin": {
-    "privacylint": "./dist/cli.js"
+    "privacylint": "dist/cli.js"
   },
   "main": "./dist/scanner.js",
   "types": "./dist/scanner.d.ts",
