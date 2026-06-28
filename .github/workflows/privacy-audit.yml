@@ -18,6 +18,10 @@ jobs:
   privacylint:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    # Skip (rather than fail) until an audit target is configured. Set a repo
+    # variable: Settings → Secrets and variables → Actions → Variables →
+    # AUDIT_TARGET_URL. Then this job runs on every PR, push, and nightly.
+    if: ${{ vars.AUDIT_TARGET_URL != '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
