@@ -1,0 +1,21 @@
+{
+  "url": "https://example.com/signup",
+  "acceptConsent": true,
+  "consentSelectors": [],
+  "inputs": [
+    { "selector": "input[name=email]", "value": "canary@example.com", "category": "email", "label": "signup-email" },
+    { "selector": "input[type=password]", "value": "S3cr3t-Canary!", "category": "password", "label": "signup-password" }
+  ],
+  "secrets": [],
+  "submit": "button[type=submit]",
+  "settle": 4000,
+  "headless": true,
+  "failOn": "error",
+  "rules": {
+    "no-name-in-tracker": "error",
+    "no-pii-pattern-in-tracker": "off"
+  },
+  "trackers": [
+    { "vendor": "Internal CDP", "urlMarkers": ["cdp.mycorp.io/collect"], "category": "analytics" }
+  ]
+}

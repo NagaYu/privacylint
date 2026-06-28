@@ -1,0 +1,67 @@
+name: Privacy Leak Audit
+
+# Runs PrivacyLint against the target site on every PR and push, plus nightly
+# (tag changes are frequently made outside of CI, in a tag-manager web UI).
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 3 * * *'
+
+permissions:
+  contents: read
+  # Required for github/codeql-action/upload-sarif to publish to the Security tab.
+  security-events: write
+
+jobs:
+  privacylint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Chromium for Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Build PrivacyLint
+        run: npm run build
+
+      - name: Run privacy audit
+        run: |
+          node ./dist/cli.js \
+            --url "${{ vars.AUDIT_TARGET_URL }}" \
+            --accept-consent \
+            --input "input[name=email]=ci-canary@example.com:email" \
+            --input "input[type=password]=ci-Canary-9f3!:password" \
+            --submit "button[type=submit]" \
+            --settle 4000 \
+            --fail-on error \
+            --sarif privacy-results.sarif
+        # The human-readable report prints to the job log; SARIF is written for
+        # the Security tab. A non-zero exit code fails the job.
+
+      - name: Upload SARIF to GitHub code scanning
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: privacy-results.sarif
+          category: privacylint
+
+      - name: Archive SARIF artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: privacy-results
+          path: privacy-results.sarif
+          retention-days: 90

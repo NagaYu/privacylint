@@ -1,0 +1,90 @@
+{
+  "name": "privacylint",
+  "version": "1.0.0",
+  "description": "A privacy-leak audit linter that detects when Meta Pixel, Google tags, and other third-party trackers exfiltrate passwords, emails, and other PII to advertising servers.",
+  "keywords": [
+    "privacy",
+    "security",
+    "linter",
+    "gdpr",
+    "ccpa",
+    "meta-pixel",
+    "google-analytics",
+    "pii",
+    "leak-detection",
+    "playwright",
+    "compliance",
+    "audit"
+  ],
+  "license": "AGPL-3.0-or-later",
+  "author": "PrivacyLint Contributors",
+  "homepage": "https://github.com/NagaYu/privacylint#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NagaYu/privacylint.git"
+  },
+  "bugs": {
+    "url": "https://github.com/NagaYu/privacylint/issues"
+  },
+  "type": "module",
+  "bin": {
+    "privacylint": "./dist/cli.js"
+  },
+  "main": "./dist/scanner.js",
+  "types": "./dist/scanner.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/scanner.d.ts",
+      "import": "./dist/scanner.js"
+    },
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "import": "./dist/types.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "LICENSE-BSL",
+    "privacylint.config.example.json"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "build:watch": "tsc --project tsconfig.json --watch",
+    "clean": "rm -rf dist",
+    "prebuild": "npm run clean",
+    "start": "node ./dist/cli.js",
+    "dev": "node --loader ts-node/esm ./src/cli.ts",
+    "scan": "node ./dist/cli.js",
+    "typecheck": "tsc --noEmit --project tsconfig.json",
+    "test": "node --no-warnings --loader ts-node/esm --test test/scanner.test.ts test/cli.test.ts",
+    "test:e2e": "node --no-warnings --loader ts-node/esm --test test/e2e.test.ts",
+    "test:typecheck": "tsc --noEmit --project tsconfig.test.json",
+    "install-browser": "playwright install chromium",
+    "prepublishOnly": "npm run build"
+  },
+  "ts-node": {
+    "esm": true,
+    "transpileOnly": true,
+    "compilerOptions": {
+      "module": "ES2022",
+      "moduleResolution": "node",
+      "verbatimModuleSyntax": false,
+      "noUnusedLocals": false,
+      "noUnusedParameters": false
+    }
+  },
+  "dependencies": {
+    "colorette": "^2.0.20",
+    "playwright": "^1.44.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}
